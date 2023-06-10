@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <title>{{ page.title }}</title>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anonymous Pro">
+      <style>
+      @media only screen and (max-width: 720px) {
+        html { margin: 1em !important; }
+        main { margin: 0 !important; }
+      }
+
+      main { margin: 0 20%; }
+      body {
+        font-family: "Helvetica", sans-serif;
+        font-size: 17px;
+        color: #c5ccc5;
+        background-color: #222222;
+      }
+      h1, h2, h3, h4, h5, h6, code, pre {
+        margin: 1.5em 0 0.5em 0;
+        font-family: "Anonymous Pro"
+      }
+      p, pre, ul, ol { margin: 0 0 1em 0}
+      pre { padding: 0.5em; overflow-x: scroll;}
+      a { color: #807aaa; }
+      </style>
+  </head>
+  <body>
+    <main class="wrapper-main">
+      <h1>{{ page.title }}</h1>
+      {{ page.content }}
+    </main>
+  </body>
+</html>
