@@ -1,6 +1,5 @@
 ---
-title: Building a Ruby to WASM compiler
-published_date: 2023-06-10 14:29:12 +0000
+title: Ruby to WASM Compiler - Hello World
 layout: default.liquid
 is_draft: false
 ---
