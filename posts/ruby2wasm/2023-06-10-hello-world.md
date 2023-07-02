@@ -60,11 +60,11 @@ Technically the second and third arguments are are actually one `ciovec_array`, 
 
 Now we have a good understanding of the WASM program, the challenge is write a program that that can take the equivalent ruby and convert that into our WASM or something like it.
 
-Generally speaking if find if I start trying to hard to design I get stuck in analysis paralysis, I'm going to something dumb with no design to it first to get something working and then iterate.
+Generally speaking I find if I start trying to hard to design I get stuck in analysis paralysis, I'm going to something dumb with no design to it first to get something working and then iterate.
 
 The plan is to use an off the shelf parser<sup>[3](https://github.com/lib-ruby-parser/lib-ruby-parser)</sup> search through the tree it creates, and look for a print statement. If we find anything else, throw an error.
 
-Once we have our print statement, we'll grab its argument, check its a list of constant strings and if it is, save that constant. Then we can construct a `ciovec` for each and save those as constants too.
+Once we have our print statement, we'll grab its argument, check it is a list of constant strings and if it is, save that constant. Then we can construct a `ciovec` for each and save those as constants too.
 
 In rust that logic looks like this:
 ```rust
@@ -104,7 +104,7 @@ The error handling and some other supporting code has been removed from the abov
 
 You probably have noticed the `Wasm*` types in the above. These are mostly just wrappers around small amounts of data that have know how to create WAT fragments.
 
-The only intresting renderer is `WasmModule` which is just a list of functions at the moment. In the module however we also need to initialise out data. While we could just take every byte and use backslash escaping on it this would make the data block pretty unreadable, so we only escape this way if the byte of data is outside the ascii printable range.
+The only intresting renderer is `WasmModule` which is just a list of functions at the moment. In the module however we also need to initialise our data. While we could just take every byte and use backslash escaping on it this would make the data block pretty unreadable, so we only escape this way if the byte of data is outside the ascii printable range.
 ```rust
 struct WasmModule {
     functions: Vec<WasmFunction>,
