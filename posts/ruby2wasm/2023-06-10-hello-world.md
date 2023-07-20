@@ -5,14 +5,14 @@ is_draft: false
 ---
 I’ve been interested in exploring compilers and WebAssembly (WASM) for a while now. I figured that the best way to really understand how compilers and WASM work is to build one.
 
-This project won’t be a serious effort to create a production-ready compiler, so I'll be avoiding serious optimisations or hooking into LLVM. As I understand it, some wasm runtimes are capable of optimisation passes before running anyway.
+This project won’t be a serious effort to create a production-ready compiler, so I'll be avoiding serious optimisations or hooking into LLVM. As I understand it, some WASM runtimes are capable of optimisation passes before running anyway.
 
 ### Prior Art
 There are a few existing projects that run Ruby code in a bytecode context.
 
 * The official Ruby interpreter can be compiled to WASM, as can some alternative interpreters such as Artichoke. These can then be used to read and run ruby code as normal.
-* [mRuby's mrbc](https://github.com/mruby/mruby): `mrbc` compiles Ruby to a non WASM bytecode which can then be executed using mRuby's interpreter.
-* [RLang](https://github.com/ljulliar/rlang) (not that R lang): RLang is a subset of Ruby, and also a compiler for that subset that translates to WASM.
+* [mRuby](https://github.com/mruby/mruby): mRuby has a executable called `mrbc` which compiles Ruby to a non WASM bytecode which can then be executed using an interpreter.
+* [RLang](https://github.com/ljulliar/rlang) (not that RLang): RLang is a subset of Ruby, and also a compiler for that subset that translates to WASM.
 
 The aim would be closest to RLang, however RLang does provide extensions to ruby to allow for typing where as I will not.
 ## Hello World By Hand
@@ -27,7 +27,7 @@ I managed to find two "hello world"'s that I could <strike>steal</strike> be ins
 
 Looking at how the memory is lain out in both examples, neither starts using the memory at index 0. This seems odd to me. Also both dynamically add things to the memory at run time, which is also odd. The fact both do this is probably a sign I have no idea what I am doing but its also a good candidate for me change to make my own hello world.
 
-After a while of struggling to undersand the difference between `wasi_snapshot_preview1` and `wasi_unstable` (there isn't one for `fd_write`) I ended up with the following
+After a while of struggling to understand the difference between `wasi_snapshot_preview1` and `wasi_unstable` (there isn't one for `fd_write`) I ended up with the following
 ```wat
 (module
   (import "wasi_snapshot_preview1" "fd_write" (func $print (param i32 i32 i32 i32) (result i32)))
@@ -44,17 +44,17 @@ After a while of struggling to undersand the difference between `wasi_snapshot_p
 )
 ```
 
-This program has the hello world constant stored in memeory and then some padding, and then two 32bit integers in little-endian order. These 2 integers make up a `ciovec` in the WASI spec, which defines an offset in the memory to start from and a length of string.
+This program has the hello world constant stored in memory and then some padding, and then two 32bit integers in little-endian order. These 2 integers make up a `ciovec` in the WASI spec, which defines an offset in the memory to start from and a length of string.
 
-In a function called `_start` (so wasmtime knows this is our entrypoint) we then call print with the arguments:
- -  `1` to mean stdout
+In a function called `_start` (so wasmtime knows this is our entry point) we then call print with the arguments:
+ - `1` to mean stdout
  - `16` to mean at memory location 16 a list of `ciovec`'s starts
- - `1` to mean there is 1 ciovec to print,
+ - `1` to mean there is 1 `ciovec` to print,
  - `100` to mean use memory location 100 to return our result.
 
 We then drop the return value.
 
-Technically the second and third arguments are are actually one `ciovec_array`, but whos counting.
+Technically the second and third arguments are are actually one `ciovec_array`, but who's counting.
 
 ## Hello world, but this time with a compiler
 
@@ -91,7 +91,7 @@ fn recursive_parse(
               };
 
               let ciovec = constants.push_const(&ciovec_data, 4);
-              current_function.body.push(WasmInstructuions::InvokePrint { variable: ciovec })
+              current_function.body.push(WasmInstructions::InvokePrint { variable: ciovec })
           }
       }
   };
@@ -104,7 +104,7 @@ The error handling and some other supporting code has been removed from the abov
 
 You probably have noticed the `Wasm*` types in the above. These are mostly just wrappers around small amounts of data that have know how to create WAT fragments.
 
-The only intresting renderer is `WasmModule` which is just a list of functions at the moment. In the module however we also need to initialise our data. While we could just take every byte and use backslash escaping on it this would make the data block pretty unreadable, so we only escape this way if the byte of data is outside the ascii printable range.
+The only interesting renderer is `WasmModule` which is just a list of functions at the moment. In the module however we also need to initialise our data. While we could just take every byte and use backslash escaping on it this would make the data block pretty unreadable, so we only escape this way if the byte of data is outside the ASCII printable range.
 ```rust
 struct WasmModule {
     functions: Vec<WasmFunction>,
