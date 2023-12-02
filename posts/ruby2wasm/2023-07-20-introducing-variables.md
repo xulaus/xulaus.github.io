@@ -1,8 +1,5 @@
----
-title: Ruby to WASM Compiler - Introducing Variables
-layout: default.liquid
-is_draft: false
----
+# Ruby to WASM Compiler - Introducing Variables
+
 Currently our compiler only understands strings sent directly the print function, and it will generate a print "syscall" for each argument. The next step is to be able to store information into variables and then print those variables.
 
 To the programmer this isn't much different but it is hugely different to our current compiler, which just stores the string to print with the call to `print` in our fledgling intermediate representation.
@@ -11,7 +8,7 @@ To the programmer this isn't much different but it is hugely different to our cu
 
 Intermediate Representation, or IR, is the middle step between parsed input and output. This is how proper compilers work, with the IR separating the frontend (parsing and lexing) from the backend (optimisation and code emitting). This is also how LLVM deals with so many languages. Language designers only need to translate their language into the LLVM IR and they reap the benefits of years of optimisation.
 
-Not us though. That would be cheating[^1].
+Not us though. That would be cheating [^1].
 
 If we look at the code so far, and think hard, there are three things that our IR will need to do. The two are obvious; call `print` and store byte data. The third I struggled with though. Given a list of arguments we need to be able to create a list of `ciovec`. I kept thinking it would be easiest to just convert into the `ciovec` structure immediately like we do with the current version, but I lost a lot of time trying.
 
@@ -191,7 +188,7 @@ And we can also check the WAT output, which is unchanged.
 print "Hello ", "World!\n"
 ```
 which will generate the following WAT file
-```wat
+```wast
 (module
   (import "wasi_snapshot_preview1" "fd_write" (func $print (param i32 i32 i32 i32) (result i32)))
   (memory (export "memory") 1)
@@ -245,7 +242,7 @@ if before_varid != cur_varid {
 ```
 
 This gives the following WAT
-```wat
+```wast
 (module
   (import "wasi_snapshot_preview1" "fd_write" (func $print (param i32 i32 i32 i32) (result i32)))
   (memory (export "memory") 1)
@@ -339,7 +336,7 @@ print x, " World\n"
 ```
 
 Which gives
-```wat
+```wast
 (module
   (import "wasi_snapshot_preview1" "fd_write" (func $print (param i32 i32 i32 i32) (result i32)))
   (memory (export "memory") 1)

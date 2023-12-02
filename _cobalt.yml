@@ -1,7 +1,0 @@
-
-site:
-  title: cobalt blog
-  description: Blog Posts Go Here
-  base_url: http://xulaus.github.io
-posts:
-  rss: rss.xml

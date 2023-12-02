@@ -1,0 +1,100 @@
+<!DOCTYPE "html">
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{{{ title }}}</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anonymous Pro">
+        <style>
+            main, footer {
+                margin: 0 20%;
+                width: auto;
+                display: block
+            }
+            nav {
+                margin: 1.5em 2em 0 1em;
+                width: calc(20% - 3em);
+                display: block;
+                position: absolute;
+            }
+            @media only screen and (max-width: 1300px){
+                main, footer {
+                    margin: 0 auto;
+                    width: 600px;
+                }
+                nav {
+                    margin: 2em auto 1em auto;
+                    width: 600px;
+                    display: block;
+                    position: inherit;
+                }
+                nav:before {
+                    content: "Table Of Contents";
+                    font-weight: bold;
+                }
+            }
+            @media only screen and (max-width: 634px){
+                main, nav, footer {
+                    margin: 0 17px;
+                    width: auto;
+                }
+            }
+            body {
+                font-family: "Helvetica", sans-serif;
+                font-size: 17px;
+                color: #c5ccc5;
+                background-color: #222222;
+                padding: 0;
+                margin: 0;
+            }
+            html {
+                padding: 0;
+                margin: 0;
+            }
+            h1, h2, h3, h4, h5, h6, code, pre { font-family: "Anonymous Pro" }
+            p, pre, ul, ol { margin: 0 0 1em 0 }
+            pre {
+                padding: 0.5em;
+                overflow-x: scroll;
+            }
+            blockquote:before { content: "\""}
+            a { color: #807aaa; }
+            a:not([href]) { color: #534f6f; }
+            .well {
+                background-color: #2b303b;
+                padding: 1em;
+                border-radius: 4px;
+                margin: 0.5em
+            }
+            h2, h3, h4, h5, h6, code, pre { margin: 0; }
+            h1 { margin: 1.5em 0 0.5em 0; }
+            h2 small { float: right }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>Lab Notes</h1>
+            {{#posts}}
+            <div class="well">
+                <h2><a href="{{{permalink}}}">{{{title}}}</a> <small>{{{published_date}}}</small></h2>
+                <p>{{{excerpt}}}</p>
+            </div>
+            {{/posts}}
+        </main>
+        {{#pagenation}}
+            <footer>
+                <span>
+                    <a {{#first_page}}href="/{{.}}"{{/first_page}}>First</a>
+                </span>
+                    <a {{#previous_page}}href="/{{.}}"{{/previous_page}}>Previous</a>
+                </span>
+                {{{ page }}} / {{{ total_pages }}}
+                <span>
+                    <a {{#next_page}}href="/{{.}}"{{/next_page}}>Next</a>
+                </span>
+                <span>
+                    <a {{#latest_page}}href="/{{.}}"{{/latest_page}}>Latest</a>
+                </span>
+            </footer>
+        {{/pagenation}}
+    </body>
+</html>

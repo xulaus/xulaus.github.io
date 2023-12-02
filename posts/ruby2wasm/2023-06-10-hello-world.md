@@ -1,8 +1,4 @@
----
-title: Ruby to WASM Compiler - Hello World
-layout: default.liquid
-is_draft: false
----
+# Ruby to WASM Compiler - Hello World
 I’ve been interested in exploring compilers and WebAssembly (WASM) for a while now. I figured that the best way to really understand how compilers and WASM work is to build one.
 
 This project won’t be a serious effort to create a production-ready compiler, so I'll be avoiding serious optimisations or hooking into LLVM. As I understand it, some WASM runtimes are capable of optimisation passes before running anyway.
@@ -28,7 +24,7 @@ I managed to find two "hello world"'s that I could <strike>steal</strike> be ins
 Looking at how the memory is lain out in both examples, neither starts using the memory at index 0. This seems odd to me. Also both dynamically add things to the memory at run time, which is also odd. The fact both do this is probably a sign I have no idea what I am doing but its also a good candidate for me change to make my own hello world.
 
 After a while of struggling to understand the difference between `wasi_snapshot_preview1` and `wasi_unstable` (there isn't one for `fd_write`) I ended up with the following
-```wat
+```wast
 (module
   (import "wasi_snapshot_preview1" "fd_write" (func $print (param i32 i32 i32 i32) (result i32)))
   (memory (export "memory") 1)
@@ -62,7 +58,7 @@ Now we have a good understanding of the WASM program, the challenge is write a p
 
 Generally speaking I find if I start trying to hard to design I get stuck in analysis paralysis, I'm going to something dumb with no design to it first to get something working and then iterate.
 
-The plan is to use an off the shelf parser<sup>[3](https://github.com/lib-ruby-parser/lib-ruby-parser)</sup> search through the tree it creates, and look for a print statement. If we find anything else, throw an error.
+The plan is to use an off the shelf parser[<sup>3</sup>](https://github.com/lib-ruby-parser/lib-ruby-parser) search through the tree it creates, and look for a print statement. If we find anything else, throw an error.
 
 Once we have our print statement, we'll grab its argument, check it is a list of constant strings and if it is, save that constant. Then we can construct a `ciovec` for each and save those as constants too.
 
@@ -148,7 +144,7 @@ Now we have a simple compiler that can deal with strings being given directly to
 print "Hello\n"
 ```
 compiling produces
-```wat
+```wast
 (module
   (import "wasi_snapshot_preview1" "fd_write" (func $print (param i32 i32 i32 i32) (result i32)))
   (memory (export "memory") 1)
